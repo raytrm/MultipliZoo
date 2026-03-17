@@ -18,7 +18,7 @@
   --color-learn: #FFCA28;
   --color-game: #66BB6A;
   --color-quiz: #42A5F5;
-  --color-exam: #AB47BC;
+  --color-contest: #AB47BC;
 
   /* Bordes */
   --border-radius-xl: 24px;
@@ -201,7 +201,7 @@ body {
 .color-learn { background-color: var(--color-learn); border: 2px solid #FFB300; }
 .color-game { background-color: var(--color-game); border: 2px solid #4CAF50; }
 .color-quiz { background-color: var(--color-quiz); border: 2px solid #2196F3; }
-.color-exam { background-color: var(--color-exam); border: 2px solid #9C27B0; }
+.color-contest { background-color: var(--color-contest); border: 2px solid #9C27B0; }
 
 /* Grid de números (Aprender y Setup Quiz) */
 .number-grid {

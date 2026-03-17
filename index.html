@@ -60,9 +60,9 @@
             <span class="emoji">🧩</span>
             <h3>Quiz</h3>
           </button>
-          <button class="menu-card color-exam" data-target="view-exam">
+          <button class="menu-card color-contest" data-target="view-contest">
             <span class="emoji">🏆</span>
-            <h3>Examen</h3>
+            <h3>Concurso</h3>
           </button>
         </div>
       </section>
@@ -118,6 +118,16 @@
         </div>
       </div>
 
+      <!-- Custom Alert Overlay -->
+      <div id="custom-alert-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:10000; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="glass-panel text-center alert-modal"
+          style="position:relative; width:90%; max-width:400px; background:#fff; padding:30px; border-radius:15px; box-sizing:border-box;">
+          <h2 id="custom-alert-message" style="color:var(--color-primary); margin-bottom:20px; font-size:1.5rem;">¡Selecciona al menos 1 tabla!</h2>
+          <button id="btn-close-alert" class="btn-primary" style="margin:0 auto; background:#FF9800; box-shadow: 0 6px 0 #F57C00;">Aceptar</button>
+        </div>
+      </div>
+
       <!-- VISTA: Juego (Río del Capibara) -->
       <section id="view-game" class="view">
         <div class="game-header">
@@ -157,7 +167,7 @@
         </div>
       </section>
 
-      <!-- VISTA: Jugar Quiz / Examen -->
+      <!-- VISTA: Jugar Quiz / Concurso -->
       <section id="view-quiz-play" class="view">
         <div class="quiz-header">
           <div class="left-controls">

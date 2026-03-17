@@ -86,8 +86,8 @@ function setupNavigation() {
       
       if (targetId === 'view-game') {
         import('./game.js').then(module => module.startGame());
-      } else if (targetId === 'view-exam') {
-        import('./quiz.js').then(m => m.startQuiz({ mode: 'exam', tables: [2,3,4,5,6,7,8,9], hints: false, time: null }));
+      } else if (targetId === 'view-contest') {
+        import('./quiz.js').then(m => m.startQuiz({ mode: 'contest', tables: [2,3,4,5,6,7,8,9], hints: false, time: null }));
         return; // Evitar el navigateTo default para que quiz.js controle la vista
       } else if (targetId === 'view-quiz') {
         // Just Navigate to view-quiz config
@@ -225,10 +225,22 @@ function setupQuizConfig() {
     container.appendChild(btn);
   }
 
+  const alertOverlay = document.getElementById('custom-alert-overlay');
+  const alertMessage = document.getElementById('custom-alert-message');
+  
+  document.getElementById('btn-close-alert').onclick = () => {
+    playSound('pop');
+    alertOverlay.style.display = 'none';
+  };
+
   document.getElementById('btn-start-quiz').onclick = () => {
     playSound('pop');
     const selected = Array.from(container.querySelectorAll('.selected')).map(b => parseInt(b.innerText));
-    if (selected.length === 0) return alert('¡Selecciona al menos 1 tabla!');
+    if (selected.length === 0) {
+      alertMessage.innerText = '¡Selecciona al menos 1 tabla!';
+      alertOverlay.style.display = 'flex';
+      return;
+    }
     
     const hints = document.getElementById('quiz-hints-toggle').checked;
     const time = document.getElementById('quiz-time-toggle').checked ? 20 : null; 

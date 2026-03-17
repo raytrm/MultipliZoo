@@ -41,7 +41,7 @@ export function startQuiz(config) {
   retryQueue = [];
   usedQuestions.clear();
   // Número de preguntas adaptativo (10 por cada tabla elegida)
-  totalQ = cfg.tables.length * 10;
+  totalQ = cfg.mode === 'contest' ? Infinity : cfg.tables.length * 10;
 
   if (!els.numpadGrid.children.length) buildNumpad();
 
@@ -53,12 +53,44 @@ export function startQuiz(config) {
   });
   els.view.classList.add('active-view');
 
-  document.getElementById('header-title').innerText = cfg.mode === 'exam' ? 'Examen Final' : 'Quiz Rápido';
+  document.getElementById('header-title').innerText = cfg.mode === 'contest' ? 'Concurso (5 Minutos)' : 'Quiz Rápido';
 
   // Make sure global top bar back button is visible
   document.getElementById('btn-back').classList.remove('hidden');
 
+  if (cfg.mode === 'contest') {
+    startContestTimer();
+  }
+
   nextQuestion();
+}
+
+function startContestTimer() {
+  const pBar = document.getElementById('quiz-progress-bar');
+  els.timer.classList.remove('hidden');
+  timeLeft = 300; // 5 minutos = 300 segundos
+  els.timer.innerText = `⏱ 5:00`;
+
+  pBar.classList.remove('hidden');
+  pBar.style.transition = 'none';
+  pBar.style.transform = 'scaleX(1)';
+  void pBar.offsetWidth; // Forzar reflow
+  pBar.style.transition = `transform 300s linear`;
+  pBar.style.transform = 'scaleX(0)';
+
+  clearInterval(timerInt);
+  timerInt = setInterval(() => {
+    // En concurso no pausamos por animaciones (waitingTransition),
+    // el tiempo sigue corriendo como reto real
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    els.timer.innerText = `⏱ ${m}:${s.toString().padStart(2, '0')}`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInt);
+      endQuiz();
+    }
+  }, 1000);
 }
 
 export function stopTimer() {
@@ -126,15 +158,21 @@ function nextQuestion() {
 
   waitingTransition = false;
   currentQ++;
-  els.progress.innerText = `Pregunta ${currentQ}/${totalQ}`;
+  
+  if (cfg.mode === 'contest') {
+    els.progress.innerText = `Aciertos: ${score}`;
+  } else {
+    els.progress.innerText = `Pregunta ${currentQ}/${totalQ}`;
+  }
 
   els.equation.innerText = `${a} × ${b}`;
   els.equation.classList.remove('wrong-anim', 'correct-anim');
   els.input.value = '';
 
-  // Configurar Timer
+  // Configurar Timer (Solo si no es concurso)
   const pBar = document.getElementById('quiz-progress-bar');
-  if (cfg.time) {
+  if (cfg.mode !== 'contest') {
+    if (cfg.time) {
     // Calcular tiempo según la tabla base (a)
     let dynamicTime = 20; // Default
     if ([0, 1, 10, 11].includes(a)) {
@@ -176,9 +214,10 @@ function nextQuestion() {
         processAnswer(-1); // Tiempo agotado = incorrecto
       }
     }, 1000);
-  } else {
-    els.timer.classList.add('hidden');
-    pBar.classList.add('hidden');
+    } else {
+      els.timer.classList.add('hidden');
+      pBar.classList.add('hidden');
+    }
   }
 
   // Renderizar métodos de respuesta
@@ -195,15 +234,18 @@ function nextQuestion() {
 function processAnswer(givenStr) {
   if (waitingTransition) return;
   waitingTransition = true;
-  clearInterval(timerInt);
-
-  // Detener barra visual de tiempo
-  const pBar = document.getElementById('quiz-progress-bar');
-  if (pBar && !pBar.classList.contains('hidden')) {
-    const computedStyle = window.getComputedStyle(pBar);
-    const transform = computedStyle.getPropertyValue('transform');
-    pBar.style.transition = 'none';
-    pBar.style.transform = transform;
+  
+  // En concurso, el tiempo es global y no se pausa
+  if (cfg.mode !== 'contest') {
+    clearInterval(timerInt);
+    // Detener barra visual de tiempo
+    const pBar = document.getElementById('quiz-progress-bar');
+    if (pBar && !pBar.classList.contains('hidden')) {
+      const computedStyle = window.getComputedStyle(pBar);
+      const transform = computedStyle.getPropertyValue('transform');
+      pBar.style.transition = 'none';
+      pBar.style.transform = transform;
+    }
   }
 
   const given = parseInt(givenStr);
@@ -217,6 +259,9 @@ function processAnswer(givenStr) {
     els.equation.classList.add('correct-anim');
     els.equation.innerText = `${els.equation.innerText} = ${currentAns} ✅`;
     score++;
+    if (cfg.mode === 'contest') {
+      els.progress.innerText = `Aciertos: ${score}`;
+    }
   } else {
     playSound('wrong');
     els.equation.classList.add('wrong-anim');
@@ -324,27 +369,53 @@ function endQuiz() {
   els.view.classList.remove('active-view');
   els.viewResults.classList.add('active-view');
 
-  const percent = score / totalQ;
   let starsGained = 0;
 
-  if (percent === 1) {
-    playSound('tada');
-    els.resTitle.innerText = "¡Perfecto!";
-    els.resStars.innerText = "🌟🌟🌟";
-    starsGained = cfg.mode === 'exam' ? 10 : 5;
-  } else if (percent >= 0.7) {
-    playSound('correct');
-    els.resTitle.innerText = "¡Muy Bien!";
-    els.resStars.innerText = "⭐⭐";
-    starsGained = 2;
+  if (cfg.mode === 'contest') {
+    if (score >= 50) {
+      playSound('tada');
+      els.resTitle.innerText = "¡Leyenda!";
+      els.resStars.innerText = "🌟🌟🌟🌟🌟";
+      starsGained = 20;
+    } else if (score >= 30) {
+      playSound('tada');
+      els.resTitle.innerText = "¡Experto!";
+      els.resStars.innerText = "🌟🌟🌟";
+      starsGained = 10;
+    } else if (score >= 15) {
+      playSound('correct');
+      els.resTitle.innerText = "¡Muy Bien!";
+      els.resStars.innerText = "⭐⭐";
+      starsGained = 5;
+    } else {
+      playSound('wrong');
+      els.resTitle.innerText = "¡Sigue practicando!";
+      els.resStars.innerText = "⭐";
+      starsGained = 2;
+    }
+    els.resText.innerText = `Resolviste ${score} operaciones en 5 minutos`;
   } else {
-    playSound('wrong');
-    els.resTitle.innerText = "¡Sigue practicando!";
-    els.resStars.innerText = "⭐";
-    starsGained = 1;
+    // Modo Quiz normal
+    const percent = score / totalQ;
+    if (percent === 1) {
+      playSound('tada');
+      els.resTitle.innerText = "¡Perfecto!";
+      els.resStars.innerText = "🌟🌟🌟";
+      starsGained = 5;
+    } else if (percent >= 0.7) {
+      playSound('correct');
+      els.resTitle.innerText = "¡Muy Bien!";
+      els.resStars.innerText = "⭐⭐";
+      starsGained = 2;
+    } else {
+      playSound('wrong');
+      els.resTitle.innerText = "¡Sigue practicando!";
+      els.resStars.innerText = "⭐";
+      starsGained = 1;
+    }
+    els.resText.innerText = `Acertaste ${score} de ${totalQ}`;
   }
 
-  els.resText.innerText = `Acertaste ${score} de ${totalQ}`;
   addStars(starsGained);
 
   els.btnResFinish.onclick = () => {
