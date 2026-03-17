@@ -89,11 +89,15 @@ function setupNavigation() {
       
       if (targetId === 'view-game') {
         import('./game.js').then(module => module.startGame());
+      } else if (targetId === 'view-game2') {
+        import('./game2.js').then(module => module.startGame2());
+      } else if (targetId === 'view-game3') {
+        import('./game3.js').then(module => module.startGame3());
+      } else if (targetId === 'view-game4') {
+        import('./game4.js').then(module => module.startGame4());
       } else if (targetId === 'view-contest') {
         import('./quiz.js').then(m => m.startQuiz({ mode: 'contest', tables: [2,3,4,5,6,7,8,9], hints: false, time: null }));
         return; // Evitar el navigateTo default para que quiz.js controle la vista
-      } else if (targetId === 'view-game2' || targetId === 'view-game3' || targetId === 'view-game4') {
-        // Próximamente (Por ahora solo navegamos)
       }
       
       navigateTo(targetId, text);

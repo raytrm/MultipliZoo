@@ -228,6 +228,95 @@
         </div>
       </section>
 
+      <!-- VISTA: Juego 2 (Lluvia de Naranjas) -->
+      <section id="view-game2" class="view">
+        <div class="game-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="score" style="margin: 0;">Puntos: <span id="game2-score">0</span></div>
+          <div class="hearts-container" id="game2-hearts" style="font-size: 1.5rem;">
+            ❤️ ❤️ ❤️
+          </div>
+        </div>
+        
+        <div id="game2-area" class="game-area" style="background: linear-gradient(to bottom, #4fc3f7, #0288d1); overflow: hidden; position: relative; height: 450px;">
+          <div id="game2-equation" class="cloud bubble-pop thought-bubble" style="z-index: 10; font-size: 2.5rem; padding: 15px 30px;">¿?</div>
+          
+          <!-- Contenedor para las naranjas que caen -->
+          <div id="game2-falling-items" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 15;"></div>
+          
+          <!-- El capibara atrapador -->
+          <div id="game2-capybara" class="capybara" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); font-size: 4rem; z-index: 20; user-select: none; touch-action: none;">
+            🐹
+          </div>
+          
+          <!-- Suelo -->
+          <div style="position: absolute; bottom: 0; width: 100%; height: 30px; background: #81C784; z-index: 5; border-top: 4px solid #4CAF50;"></div>
+        </div>
+        
+        <div class="game-bottom-panel glass-panel text-center mt-2" style="background: rgba(255, 204, 128, 0.9); border-color: rgba(255, 152, 0, 0.6); box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);">
+          <p style="margin: 0; font-weight: bold; color: #E65100;">¡Mueve el capibara deslizando el dedo!</p>
+        </div>
+      </section>
+
+      <!-- VISTA: Juego 3 (Salto de Nenúfares) -->
+      <section id="view-game3" class="view">
+        <div class="game-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="score" style="margin: 0;">Puntos: <span id="game3-score">0</span></div>
+          <div class="table-indicator" id="game3-table-indicator" style="font-weight: bold; color: white; font-size: 1.2rem; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px;">Tabla del ?</div>
+        </div>
+        
+        <div id="game3-area" class="game-area" style="background: linear-gradient(to bottom, #29B6F6, #0277BD); overflow: hidden; position: relative; height: 450px;">
+          <!-- Mensaje instruccional superpuesto -->
+          <div id="game3-instruction" class="cloud bubble-pop thought-bubble" style="z-index: 10; font-size: 1.5rem; padding: 10px 20px; top: 20px;">Encuentra el múltiplo</div>
+          
+          <!-- Contenedor de nenúfares generados dinámicamente -->
+          <div id="game3-lilypads" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 5;"></div>
+          
+          <!-- Capibara saltador -->
+          <div id="game3-capybara" class="capybara" style="position: absolute; font-size: 3.5rem; z-index: 20; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); bottom: 10px; left: 50%; transform: translateX(-50%); pointer-events: none;">
+            🐹
+          </div>
+        </div>
+        
+        <div class="game-bottom-panel glass-panel text-center mt-2" style="background: rgba(129, 199, 132, 0.9); border-color: rgba(76, 175, 80, 0.6); box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);">
+          <p style="margin: 0; font-weight: bold; color: #1B5E20;">¡Cruza el río pulsando en orden!</p>
+        </div>
+      </section>
+
+      <!-- VISTA: Juego 4 (Carpincho Turbo) -->
+      <section id="view-game4" class="view">
+        <div class="game-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="score" style="margin: 0;">Distancia: <span id="game4-score">0</span>m</div>
+          <div class="hearts-container" id="game4-hearts" style="font-size: 1.5rem;">
+            ❤️ ❤️ ❤️
+          </div>
+        </div>
+        
+        <div id="game4-area" class="game-area" style="background: linear-gradient(to bottom, #87CEEB, #E0F6FF); overflow: hidden; position: relative; height: 350px;">
+          <!-- Speed lines (decorative) -->
+          <div id="game4-speed-lines" style="position: absolute; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 0.5s;"></div>
+          
+          <!-- Capibara corredor -->
+          <div id="game4-capybara" class="capybara" style="position: absolute; bottom: 40px; left: 15%; font-size: 4rem; z-index: 20; transition: transform 0.2s;">
+            🐹
+          </div>
+          
+          <!-- Suelo que se mueve -->
+          <div id="game4-ground" style="position: absolute; bottom: 0; left: 0; width: 200%; height: 40px; background: #8D6E63; z-index: 10; display: flex;">
+            <div style="flex:1; border-top: 4px solid #7cb342; background: repeating-linear-gradient(90deg, #A1887F, #A1887F 40px, #8D6E63 40px, #8D6E63 80px);"></div>
+          </div>
+          
+          <!-- Contenedor de obstáculos -->
+          <div id="game4-obstacles" style="position: absolute; top:0; left:0; width: 100%; height: 100%; pointer-events: none;"></div>
+        </div>
+        
+        <!-- Botones de respuesta rápida -->
+        <div class="game-bottom-panel glass-panel text-center mt-2" style="background: rgba(255, 235, 59, 0.9); border-color: rgba(253, 216, 53, 0.6); box-shadow: 0 4px 15px rgba(253, 216, 53, 0.2);">
+          <div id="game4-options" style="display: flex; justify-content: space-around; gap: 10px;">
+            <!-- Opciones inyectadas por JS -->
+          </div>
+        </div>
+      </section>
+
       <!-- VISTA: Quiz Configuración -->
       <section id="view-quiz" class="view">
         <div class="glass-panel text-center">
