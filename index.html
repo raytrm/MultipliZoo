@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MultipliZoo</title>
+  <!-- Fuente amigable y redondeada -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Capa de fondo decorativa -->
+  <div class="bg-layer">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div id="app" class="app-container">
+    <!-- Sistema Top Bar -->
+    <header class="top-bar">
+      <button id="btn-back" class="icon-btn hidden" aria-label="Volver">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="title-container">
+        <h1 id="header-title">MultipliZoo</h1>
+      </div>
+      <div class="rewards-display">
+        <span class="star-icon">⭐</span>
+        <span id="star-count">0</span>
+      </div>
+    </header>
+
+    <!-- Contenedor Principal de Vistas -->
+    <main id="main-content" class="views-container">
+      <!-- VISTA: Menú Principal -->
+      <section id="view-menu" class="view active-view">
+        <div class="hero-section">
+          <h2>¡Hola! 👋</h2>
+          <p>¿Qué quieres hacer hoy?</p>
+        </div>
+        <div class="menu-grid">
+          <button class="menu-card color-learn" data-target="view-learn">
+            <span class="emoji">📚</span>
+            <h3>Aprender</h3>
+          </button>
+          <button class="menu-card color-game" data-target="view-game">
+            <span class="emoji">🐸</span>
+            <h3>Jugar</h3>
+          </button>
+          <button class="menu-card color-quiz" data-target="view-quiz">
+            <span class="emoji">🧩</span>
+            <h3>Quiz</h3>
+          </button>
+          <button class="menu-card color-exam" data-target="view-exam">
+            <span class="emoji">🏆</span>
+            <h3>Examen</h3>
+          </button>
+        </div>
+      </section>
+
+      <!-- VISTA: Aprender -->
+      <section id="view-learn" class="view">
+        <h2 style="margin-bottom: 20px;">Elige una Tabla</h2>
+        <div class="glass-panel text-center">
+          <div id="learn-grid" class="number-grid learn-grid"></div>
+        </div>
+      </section>
+
+      <!-- VISTA: Detalles de Aprender -->
+      <section id="view-learn-detail" class="view">
+        <h2 id="learn-title-detail" class="title-large">Tabla del X</h2>
+        <div class="learn-content glass-panel">
+          <div id="learn-table-display" class="table-list"></div>
+          <div class="video-container">
+            <button id="btn-play-video" class="btn-primary" style="background:#E53935; box-shadow: 0 6px 0 #B71C1C;">▶
+              Ver Videos</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Menu Videos Overlay -->
+      <div id="video-menu-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9998; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="glass-panel text-center"
+          style="position:relative; width:90%; max-width:400px; background:#fff; padding:30px; border-radius:15px; box-sizing:border-box;">
+          <button id="btn-close-video-menu"
+            style="position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:50%; border:none; background:#eee; font-size:1.2rem; font-weight:bold; cursor:pointer; color:#333; display:flex; justify-content:center; align-items:center; padding:0;">X</button>
+          <h2 id="video-menu-title" style="color:var(--color-primary); margin-bottom:20px; font-size:1.5rem;">Videos
+            Tabla del X</h2>
+          <div style="display:flex; flex-direction:column; gap:15px;">
+            <button class="btn-primary video-option-btn" data-type="musical"
+              style="margin:0; background:#9C27B0; box-shadow: 0 6px 0 #7B1FA2;">🎵 Musical</button>
+            <button class="btn-primary video-option-btn" data-type="teoria"
+              style="margin:0; background:#03A9F4; box-shadow: 0 6px 0 #0288D1;">📚 Teoría</button>
+            <button class="btn-primary video-option-btn" data-type="trucos"
+              style="margin:0; background:#FF9800; box-shadow: 0 6px 0 #F57C00;">✨ Trucos</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Overlay Fulscreen -->
+      <div id="video-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column;">
+        <button id="btn-close-video"
+          style="align-self:flex-end; margin:20px; width:44px; height:44px; border-radius:50%; border:none; background:white; font-size:1.5rem; font-weight:bold; cursor:pointer; color:#333; display:flex; justify-content:center; align-items:center; padding:0;">X</button>
+        <div id="youtube-fullscreen-placeholder"
+          style="flex:1; width:100%; max-width:1000px; margin:0 auto; padding-bottom:20px;">
+          <!-- Se inyectará el iframe dinámicamente -->
+        </div>
+      </div>
+
+      <!-- VISTA: Juego (Río del Capibara) -->
+      <section id="view-game" class="view">
+        <div class="game-header">
+          <div class="score">Puntos: <span id="game-score">0</span></div>
+        </div>
+        <div id="game-area" class="game-area">
+          <div id="cloud-equation" class="cloud bubble-pop">¿?</div>
+          <div id="leaves-container" class="leaves-row">
+            <!-- Hojas de nenúfar se inyectarán aquí -->
+          </div>
+          <div id="capybara-character" class="capybara">🐹</div>
+        </div>
+      </section>
+
+      <!-- VISTA: Quiz Configuración -->
+      <section id="view-quiz" class="view">
+        <div class="glass-panel text-center">
+
+          <div class="quiz-options-top">
+            <label class="custom-chk">
+              <input type="checkbox" id="quiz-hints-toggle" checked>
+              <div class="chk-content">💡 Con pistas</div>
+            </label>
+            <label class="custom-chk">
+              <input type="checkbox" id="quiz-time-toggle">
+              <div class="chk-content">⏰ Con tiempo</div>
+            </label>
+          </div>
+
+          <h3 style="margin-bottom: 15px; color: var(--color-primary);">Selecciona una o más tablas</h3>
+          <div id="quiz-tables-selector" class="number-grid quiz-grid multi-select"></div>
+
+          <div style="display:flex; justify-content:center; margin-top:20px;">
+            <button id="btn-start-quiz" class="btn-primary" style="margin:0; width:auto; padding:16px 40px;">¡ Empezar
+              !</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA: Jugar Quiz / Examen -->
+      <section id="view-quiz-play" class="view">
+        <div class="quiz-header">
+          <div class="left-controls">
+            <span id="quiz-progress">Pregunta 1/10</span>
+          </div>
+          <span id="quiz-timer" class="hidden">⏱ 10s</span>
+        </div>
+        <div class="quiz-question-box">
+          <div id="quiz-progress-bar" class="quiz-progress-bar hidden"></div>
+          <span id="quiz-equation" class="equation-huge">? x ?</span>
+        </div>
+        <div id="quiz-options-container" class="quiz-options">
+          <!-- Botones inyectados dinámicamente -->
+        </div>
+        <div id="quiz-numpad" class="quiz-numpad hidden">
+          <!-- Teclado en pantalla si no hay pistas -->
+          <input type="number" id="quiz-input-answer" placeholder="..." readonly>
+          <div class="numpad-grid small-grid"></div>
+        </div>
+
+        <div id="quiz-continue-container" style="display:none; justify-content:center; margin-top:20px;">
+          <button id="btn-quiz-continue" class="btn-primary"
+            style="margin:0; width:auto; padding:16px 40px; background:#4CAF50; box-shadow: 0 6px 0 #388E3C;">Siguiente
+            Pregunta ➡</button>
+        </div>
+      </section>
+
+      <!-- Vista Resultados Global -->
+      <section id="view-results" class="view">
+        <div class="results-box glass-panel text-center">
+          <h2 id="results-title">¡Gran Trabajo!</h2>
+          <div id="results-stars" class="stars-earned">⭐⭐⭐</div>
+          <p id="results-score-text">Acertaste X de Y</p>
+          <button id="btn-finish-results" class="btn-primary">Aceptar recompensa</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+
+</html>
