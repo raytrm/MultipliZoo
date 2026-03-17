@@ -52,7 +52,7 @@
             <span class="emoji">📚</span>
             <h3>Aprender</h3>
           </button>
-          <button class="menu-card color-game" data-target="view-game">
+          <button class="menu-card color-game" data-target="view-game-menu">
             <span class="emoji">🐸</span>
             <h3>Jugar</h3>
           </button>
@@ -128,17 +128,103 @@
         </div>
       </div>
 
-      <!-- VISTA: Juego (Río del Capibara) -->
+      <!-- Friend Selector Overlay -->
+      <div id="friend-selector-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:10001; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="glass-panel text-center"
+          style="position:relative; width:90%; max-width:500px; background:#fff; padding:30px; border-radius:15px; box-sizing:border-box;">
+          <h2 style="color:var(--color-primary); margin-bottom:20px; font-size:1.8rem;">¡Elige un Amigo!</h2>
+          <div id="friend-grid" class="number-grid" style="grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+            <!-- Friends button injected here -->
+          </div>
+          <button id="btn-close-friends" class="btn-primary" style="margin:0 auto; background:#EF5350; box-shadow: 0 6px 0 #C62828;">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- VISTA: Menú de Juegos -->
+      <section id="view-game-menu" class="view">
+        <div class="hero-section" style="margin-bottom: 20px;">
+          <h2 style="font-size: 2rem;">Minijuegos</h2>
+          <p>¡Elige tu aventura!</p>
+        </div>
+        <div class="menu-grid" style="grid-template-columns: 1fr; gap: 12px;">
+          <!-- Juego 1: Camino del Carpincho -->
+          <button class="menu-card color-game" data-target="view-game" style="flex-direction: row; padding: 20px; justify-content: flex-start;">
+            <span class="emoji" style="margin-bottom: 0; margin-right: 20px; font-size: 2.5rem;">🐹</span>
+            <div style="text-align: left;">
+              <h3 style="font-size: 1.3rem;">El Camino del Carpincho</h3>
+              <p style="font-size: 0.9rem; opacity: 0.9;">Modo Clásico y Relajante</p>
+            </div>
+          </button>
+          
+          <!-- Juego 2: Lluvia de Naranjas -->
+          <button class="menu-card color-learn" data-target="view-game2" style="flex-direction: row; padding: 20px; justify-content: flex-start; filter: grayscale(0.8); opacity: 0.8;">
+            <span class="emoji" style="margin-bottom: 0; margin-right: 20px; font-size: 2.5rem;">🍊</span>
+            <div style="text-align: left;">
+              <h3 style="font-size: 1.3rem;">Lluvia de Naranjas</h3>
+              <p style="font-size: 0.9rem; opacity: 0.9;">¡Atrapa las correctas! (Próximamente)</p>
+            </div>
+          </button>
+
+          <!-- Juego 3: Salto de Nenúfares -->
+          <button class="menu-card color-quiz" data-target="view-game3" style="flex-direction: row; padding: 20px; justify-content: flex-start; filter: grayscale(0.8); opacity: 0.8;">
+            <span class="emoji" style="margin-bottom: 0; margin-right: 20px; font-size: 2.5rem;">🪷</span>
+            <div style="text-align: left;">
+              <h3 style="font-size: 1.3rem;">Salto de Nenúfares</h3>
+              <p style="font-size: 0.9rem; opacity: 0.9;">Memoriza la secuencia (Próximamente)</p>
+            </div>
+          </button>
+
+          <!-- Juego 4: Carpincho Turbo -->
+          <button class="menu-card color-contest" data-target="view-game4" style="flex-direction: row; padding: 20px; justify-content: flex-start; filter: grayscale(0.8); opacity: 0.8;">
+            <span class="emoji" style="margin-bottom: 0; margin-right: 20px; font-size: 2.5rem;">🏎️</span>
+            <div style="text-align: left;">
+              <h3 style="font-size: 1.3rem;">Carpincho Turbo</h3>
+              <p style="font-size: 0.9rem; opacity: 0.9;">Carrera infinita (Próximamente)</p>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- VISTA: Juego 1 (El Camino del Carpincho) -->
       <section id="view-game" class="view">
-        <div class="game-header">
-          <div class="score">Puntos: <span id="game-score">0</span></div>
+        <div class="game-header" style="display: flex; justify-content: center; align-items: center;">
+          <div class="score" style="margin: 0;">Puntos: <span id="game-score">0</span></div>
         </div>
         <div id="game-area" class="game-area">
-          <div id="cloud-equation" class="cloud bubble-pop">¿?</div>
-          <div id="leaves-container" class="leaves-row">
-            <!-- Hojas de nenúfar se inyectarán aquí -->
+          <!-- Combo y Partículas -->
+          <div id="combo-text" class="combo-text hidden">¡Increíble!</div>
+          
+          <div id="cloud-equation" class="cloud bubble-pop thought-bubble">¿?</div>
+          
+          <!-- Camino Visual S-Shape Mejorado -->
+          <div class="game-path">
+            <svg class="path-svg" viewBox="0 0 400 450" preserveAspectRatio="none">
+              <!-- Camino en S ajustado para no chocar con la burbuja central ni con las respuestas -->
+              <path class="path-line" d="M 40 130 L 320 130 Q 360 130 360 180 L 360 180 Q 360 230 320 230 L 80 230 Q 40 230 40 280 L 40 280 Q 40 330 80 330 L 320 330" />
+            </svg>
+            <div class="finish-line" style="position: absolute;">🚩</div>
           </div>
-          <div id="capybara-character" class="capybara">🐹</div>
+          
+          <div id="leaves-container" class="leaves-row">
+            <!-- Opciones se inyectarán aquí -->
+          </div>
+          
+          <!-- Carpincho y Coleccionables -->
+          <div id="capybara-group" class="capybara-group">
+            <div id="collectibles-trail" class="collectibles-trail"></div>
+            <div id="capybara-character" class="capybara">🐹</div>
+          </div>
+        </div>
+        
+        <!-- Zona Inferior: Barra de Energía y Amigos -->
+        <div class="game-bottom-panel glass-panel text-center mt-2" style="background: rgba(255, 204, 128, 0.9); border-color: rgba(255, 152, 0, 0.6); box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div class="energy-bar-container" style="flex: 1; height: 20px; background: #eee; border-radius: 10px; overflow: hidden; border: 2px solid #ccc;">
+              <div id="energy-bar-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #FFEA00, #FF9100); transition: width 0.3s;"></div>
+            </div>
+            <button id="btn-shop" class="btn-primary" disabled style="margin: 0; padding: 10px 20px; width: auto; background: #9E9E9E; box-shadow: 0 4px 0 #757575; opacity: 0.7; transition: all 0.3s;">🐾 Amigos</button>
+          </div>
         </div>
       </section>
 

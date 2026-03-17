@@ -289,7 +289,7 @@ body {
 
 .game-area {
   position: relative;
-  height: 350px;
+  height: 450px;
   background: linear-gradient(to bottom, #81D4FA, #29B6F6);
   border-radius: var(--border-radius-xl);
   overflow: hidden;
@@ -312,7 +312,7 @@ body {
 
 .leaves-row {
   position: absolute;
-  bottom: 80px; width: 100%; height: 60px;
+  bottom: 15px; width: 100%; height: 60px;
 }
 
 .leaf {
@@ -335,14 +335,138 @@ body {
 .leaf.correct { background: #FFCA28; border-color: #FF8F00; transform: scale(1.2) translateY(-10px); }
 .leaf.wrong { background: #EF5350; border-color: #C62828; transform: translateY(15px); opacity: 0.5; }
 
-.capybara {
+.capybara-group {
   position: absolute;
-  bottom: 10px; left: 10px;
-  font-size: 3.5rem; /* Emoji de capibara 🐹 */
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  top: 0px; left: 0px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 10;
+}
+
+.capybara {
+  font-size: 3.5rem; /* Emoji de capibara 🐹 */
   text-shadow: 0 4px 0 rgba(0,0,0,0.2);
 }
+
+.collectibles-trail {
+  display: flex;
+  gap: 10px;
+  margin-right: 15px;
+  font-size: 3rem; /* Doubles friend size */
+  opacity: 0.9;
+}
+
+.game-path {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Trazado SVG curvo para el camino en S */
+.path-svg {
+  width: 100%;
+  height: 100%;
+}
+.path-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 25;
+  stroke-dasharray: 15 15;
+  stroke-linecap: round;
+}
+
+.finish-line {
+  position: absolute;
+  font-size: 2.5rem;
+  z-index: 5;
+  /* El script lo colocará manualmente, o lo ponemos fijo en el punto final del SVG */
+  text-shadow: 0 4px 0 rgba(0,0,0,0.2);
+}
+
+.thought-bubble {
+  position: absolute;
+  top: 20px; left: 50%; transform: translateX(-50%);
+  background: white;
+  border-radius: 50%;
+  padding: 15px 30px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  box-shadow: 0 8px 0 #E0E0E0;
+}
+.thought-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -15px; left: 20px;
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 0 #E0E0E0;
+}
+.thought-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: 10px;
+  width: 10px; height: 10px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 3px 0 #E0E0E0;
+}
+
+.combo-text {
+  position: absolute;
+  top: 40%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: 900;
+  color: #FFEB3B;
+  text-shadow: 0 4px 0 #F57F17, 0 0 20px rgba(255,235,59,0.8);
+  z-index: 20;
+  animation: popBounce 0.5s ease-out forwards;
+}
+
+@keyframes popBounce {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes highlightCorrect {
+  0% { transform: scale(1); box-shadow: 0 0 0px #4CAF50; border-color: #4CAF50; background: #66BB6A; }
+  50% { transform: scale(1.1); box-shadow: 0 0 20px #4CAF50; border-color: #ffffff; background: #81C784; }
+  100% { transform: scale(1); box-shadow: 0 0 0px #4CAF50; border-color: #4CAF50; background: #66BB6A; }
+}
+.leaf.highlight-correct {
+  animation: highlightCorrect 1s ease-in-out infinite;
+  z-index: 20;
+}
+
+.celebration-mode {
+  position: absolute !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%, -50%) scale(1.5) !important;
+  transition: all 1s ease-in-out !important;
+  z-index: 50;
+  flex-direction: column;
+}
+
+.particle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 15;
+  animation: particleAnim 1s ease-out forwards;
+}
+
+@keyframes particleAnim {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; }
+}
+
+/* Biomas dinámicos */
+.bg-biome-0 { background: linear-gradient(to bottom, #81D4FA, #29B6F6) !important; }
+.bg-biome-1 { background: linear-gradient(to bottom, #FFE082, #FFCA28) !important; } /* Atardecer */
+.bg-biome-2 { background: linear-gradient(to bottom, #CE93D8, #AB47BC) !important; } /* Noche Mágica */
+.bg-biome-3 { background: linear-gradient(to bottom, #A5D6A7, #66BB6A) !important; } /* Bosque Profundo */
 
 .quiz-header {
   display: flex; justify-content: space-between; align-items: center;
