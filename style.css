@@ -703,7 +703,7 @@ body {
   100% { transform: rotate(0) translateX(0); }
 }
 .ground-move {
-  animation: groundScroll 1s linear infinite;
+  animation: groundScroll 2.5s linear infinite;
 }
 @keyframes groundScroll {
   from { transform: translateX(0); }

@@ -107,9 +107,40 @@ function setupNavigation() {
 
 // ------ Funciones Globales ------
 export function addStars(amount) {
-  AppState.stars += amount;
-  localStorage.setItem('multiplizoo_stars', AppState.stars);
-  updateStarsDisplay();
+  if (amount > 0) {
+    AppState.stars += amount;
+    localStorage.setItem('multiplizoo_stars', AppState.stars);
+    updateStarsDisplay();
+  }
+}
+
+export function showGameResult(title, message, onRetryCallback) {
+  const overlay = document.getElementById('game-over-overlay');
+  document.getElementById('game-over-title').innerText = title;
+  document.getElementById('game-over-message').innerText = message;
+  
+  const btnRetry = document.getElementById('btn-game-over-retry');
+  const btnMenu = document.getElementById('btn-game-over-menu');
+  
+  // Clone to avoid multiple listeners
+  const newBtnRetry = btnRetry.cloneNode(true);
+  const newBtnMenu = btnMenu.cloneNode(true);
+  btnRetry.parentNode.replaceChild(newBtnRetry, btnRetry);
+  btnMenu.parentNode.replaceChild(newBtnMenu, btnMenu);
+  
+  newBtnRetry.onclick = () => {
+    playSound('pop');
+    overlay.style.display = 'none';
+    if(onRetryCallback) onRetryCallback();
+  };
+  
+  newBtnMenu.onclick = () => {
+    playSound('pop');
+    overlay.style.display = 'none';
+    document.getElementById('btn-back').click();
+  };
+  
+  overlay.style.display = 'flex';
 }
 
 function updateStarsDisplay() {

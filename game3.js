@@ -1,4 +1,5 @@
 import { playSound } from './audio.js';
+import { showGameResult } from './main.js';
 
 let score = 0;
 let currentTable = 0;
@@ -185,8 +186,8 @@ function triggerWin() {
   
   setTimeout(() => {
     import('./main.js').then(m => m.addStars(Math.floor(score / 10))); 
-    document.getElementById('btn-back').click();
-  }, 4000);
+    showGameResult('¡Victoria!', `¡Cruzaste el río con ${score} puntos!`, startGame3);
+  }, 3000);
 }
 
 function createParticles(element, emoji, count = 6) {

@@ -1,4 +1,5 @@
 import { playSound } from './audio.js';
+import { showGameResult } from './main.js';
 
 let score = 0;
 let currentCorrect = 0;
@@ -191,11 +192,11 @@ function triggerWin() {
   gameEls.capybaraGroup.classList.add('celebration-mode');
   gameEls.capybaraGroup.style.animation = 'popBounce 1s infinite alternate';
   
-  // Salir de vuelta al menú después de 5 segundos
+  // Mostrar modal de resultado después de unos segundos
   setTimeout(() => {
     gameEls.capybaraGroup.style.animation = 'none';
-    document.getElementById('btn-back').click();
-  }, 5000);
+    showGameResult('¡Victoria!', `¡Completaste el Camino del Carpincho con ${score} puntos!`, startGame);
+  }, 4000);
 }
 
 function getPathPosition(percent) {

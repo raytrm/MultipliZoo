@@ -141,6 +141,20 @@
         </div>
       </div>
 
+      <!-- Game Over Overlay -->
+      <div id="game-over-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:10001; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="glass-panel text-center"
+          style="position:relative; width:90%; max-width:400px; background:#fff; padding:30px; border-radius:15px; box-sizing:border-box;">
+          <h2 id="game-over-title" style="color:var(--color-primary); margin-bottom:10px; font-size:1.8rem;">¡Juego Terminado!</h2>
+          <p id="game-over-message" style="font-size:1.2rem; color:#555; margin-bottom:20px;">Has ganado 50 puntos.</p>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="btn-game-over-menu" class="btn-primary" style="margin:0; background:#9E9E9E; box-shadow: 0 6px 0 #757575; flex: 1;">Volver al menú</button>
+            <button id="btn-game-over-retry" class="btn-primary" style="margin:0; flex: 1;">Reintentar</button>
+          </div>
+        </div>
+      </div>
+
       <!-- VISTA: Menú de Juegos -->
       <section id="view-game-menu" class="view">
         <div class="hero-section" style="margin-bottom: 20px;">

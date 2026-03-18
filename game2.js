@@ -1,4 +1,5 @@
 import { playSound } from './audio.js';
+import { showGameResult } from './main.js';
 
 let score = 0;
 let hearts = 3;
@@ -115,14 +116,14 @@ function triggerGameOver(wonByTime) {
     }
     setTimeout(() => {
       import('./main.js').then(m => m.addStars(Math.floor(score / 20))); 
-      document.getElementById('btn-back').click();
-    }, 4000);
+      showGameResult('¡Tiempo Dominado!', `¡Atrapaste increíbles naranjas por valor de ${score} puntos!`, startGame2);
+    }, 3000);
   } else {
     playSound('wrong');
     game2Els.equation.innerText = "¡Oh no, te quedaste sin corazones!";
     setTimeout(() => {
-      document.getElementById('btn-back').click();
-    }, 3000);
+      showGameResult('¡Oh no!', `Atrapaste naranjas por valor de ${score} puntos. ¡Inténtalo de nuevo!`, startGame2);
+    }, 2000);
   }
 }
 

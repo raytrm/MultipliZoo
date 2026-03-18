@@ -1,4 +1,5 @@
 import { playSound } from './audio.js';
+import { showGameResult } from './main.js';
 
 let distance = 0;
 let hearts = 3;
@@ -7,7 +8,7 @@ let gameActive = false;
 let gameLoopId = null;
 let obstacles = [];
 let nextSpawnDistance = 500;
-let baseSpeed = 5;
+let baseSpeed = 1; // Down to 1
 
 const game4Els = {
   score: document.getElementById('game4-score'),
@@ -26,20 +27,25 @@ export function startGame4() {
   gameActive = true;
   obstacles = [];
   nextSpawnDistance = window.innerWidth;
-  
+
   game4Els.obstaclesContainer.innerHTML = '';
   game4Els.capybara.className = 'capybara';
   game4Els.speedIndicator.style.opacity = '0';
-  
+  document.getElementById('game4-ground').classList.add('ground-move');
+
+  // Initially spawn one immediately so options show up
+  spawnObstacle();
+  nextSpawnDistance = window.innerWidth + 400;
+
   updateUI();
-  
+
   // Setup Quit Game
   const btnBack = document.getElementById('btn-back');
   const oldBackClick = btnBack.onclick;
   btnBack.onclick = () => {
     playSound('pop');
     cleanupGame4();
-    if(oldBackClick) oldBackClick();
+    if (oldBackClick) oldBackClick();
   };
 
   requestAnimationFrame(gameLoop);
@@ -47,14 +53,14 @@ export function startGame4() {
 
 function updateUI() {
   game4Els.score.innerText = Math.floor(distance / 10);
-  
+
   let heartsHtml = '';
-  for(let i=0; i<3; i++) {
-    if(i < hearts) heartsHtml += '❤️ ';
+  for (let i = 0; i < 3; i++) {
+    if (i < hearts) heartsHtml += '❤️ ';
     else heartsHtml += '🖤 ';
   }
   game4Els.hearts.innerHTML = heartsHtml.trim();
-  
+
   if (hearts <= 0) {
     triggerGameOver(false);
   }
@@ -64,27 +70,27 @@ function triggerGameOver(won) {
   if (!gameActive) return;
   gameActive = false;
   cleanupGame4();
-  
+
   if (won) {
     playSound('tada');
     // Confeti
     const areaW = game4Els.area.clientWidth;
     const areaH = game4Els.area.clientHeight;
-    for(let i=0; i<5; i++) {
+    for (let i = 0; i < 5; i++) {
       setTimeout(() => {
         createParticlesDirect(Math.random() * areaW, Math.random() * areaH, '🎉', 10);
         playSound('correct');
       }, i * 300);
     }
     setTimeout(() => {
-      import('./main.js').then(m => m.addStars(50)); 
-      document.getElementById('btn-back').click();
+      import('./main.js').then(m => m.addStars(50));
+      showGameResult('¡Victoria!', `¡Superaste la carrera a máxima velocidad!`, startGame4);
     }, 4000);
   } else {
     playSound('wrong');
     setTimeout(() => {
-      document.getElementById('btn-back').click();
-    }, 3000);
+      showGameResult('¡Crash!', `Caíste a los ${Math.floor(distance / 10)} metros. ¡Inténtalo de nuevo!`, startGame4);
+    }, 2000);
   }
 }
 
@@ -92,22 +98,23 @@ function cleanupGame4() {
   gameActive = false;
   cancelAnimationFrame(gameLoopId);
   game4Els.optionsContainer.innerHTML = '';
+  document.getElementById('game4-ground').classList.remove('ground-move');
 }
 
-function spawnObstacle() {
+function spawnObstacle(extraDistance = 0) {
   const a = Math.floor(Math.random() * 8) + 2;
   const b = Math.floor(Math.random() * 8) + 2;
   const correct = a * b;
-  
+
   const el = document.createElement('div');
   el.className = 'obstacle';
   el.innerText = `${a}x${b}`;
-  
-  const startX = game4Els.area.clientWidth + 50;
+
+  const startX = game4Els.area.clientWidth + 50 + extraDistance;
   el.style.left = `${startX}px`;
-  
+
   game4Els.obstaclesContainer.appendChild(el);
-  
+
   const obs = {
     el,
     x: startX,
@@ -115,9 +122,9 @@ function spawnObstacle() {
     isCleared: false,
     a, b
   };
-  
+
   obstacles.push(obs);
-  
+
   // Set options for the closest uncleared obstacle
   updateOptions();
 }
@@ -126,14 +133,14 @@ function updateOptions() {
   game4Els.optionsContainer.innerHTML = '';
   const activeObs = obstacles.find(o => !o.isCleared);
   if (!activeObs) return;
-  
+
   const correct = activeObs.correct;
   let options = [correct];
-  
-  while(options.length < 3) {
+
+  while (options.length < 3) {
     let errA = activeObs.a + (Math.floor(Math.random() * 3) - 1);
     let errB = activeObs.b + (Math.floor(Math.random() * 3) - 1);
-    if(errA < 1) errA = 1; if(errB < 1) errB = 1;
+    if (errA < 1) errA = 1; if (errB < 1) errB = 1;
     let wrong = errA * errB;
     if (Math.random() > 0.5) wrong += (Math.random() > 0.5 ? 2 : -2);
     if (wrong !== correct && !options.includes(wrong) && wrong > 0) {
@@ -141,7 +148,7 @@ function updateOptions() {
     }
   }
   options.sort(() => Math.random() - 0.5);
-  
+
   options.forEach(opt => {
     const btn = document.createElement('button');
     btn.className = 'num-btn';
@@ -156,41 +163,42 @@ function updateOptions() {
 
 function onOptionClick(val) {
   if (!gameActive) return;
-  
+
   const activeObs = obstacles.find(o => !o.isCleared);
   if (!activeObs) return;
-  
+
   // Check if obstacle is close enough to answer (e.g., within 400px of capybara)
   const capybaraRect = game4Els.capybara.getBoundingClientRect();
   const areaRect = game4Els.area.getBoundingClientRect();
   const cX = capybaraRect.left - areaRect.left;
-  
+
   if (val === activeObs.correct) {
     // Correct!
     playSound('pop');
     activeObs.isCleared = true;
     activeObs.el.classList.add('cleared');
-    
+
     // Jump animation
     game4Els.capybara.classList.remove('capybara-jump', 'capybara-stumble');
     void game4Els.capybara.offsetWidth; // reflow
     game4Els.capybara.classList.add('capybara-jump', 'capybara-turbo');
     game4Els.speedIndicator.style.opacity = '1';
-    
+
     setTimeout(() => {
       game4Els.capybara.classList.remove('capybara-turbo');
       game4Els.speedIndicator.style.opacity = '0';
     }, 600);
-    
-    speed = Math.min(speed + 1, 15);
+
+    // Increase speed more slowly (0.5 instead of 1.0)
+    speed = Math.min(speed + 0.5, 15);
     updateOptions(); // load next options
   } else {
     // Wrong!
     playSound('wrong');
-    hearts--;
+    // hearts--; // Se quita el doble castigo, solo tropieza. El corazón se pierde al chocar.
     speed = baseSpeed;
     updateUI();
-    
+
     game4Els.capybara.classList.remove('capybara-jump', 'capybara-stumble', 'capybara-turbo');
     void game4Els.capybara.offsetWidth;
     game4Els.capybara.classList.add('capybara-stumble');
@@ -199,27 +207,28 @@ function onOptionClick(val) {
 
 function gameLoop() {
   if (!gameActive) return;
-  
+
   distance += speed;
   updateUI();
-  
-  // Spawn obstacles
-  if (distance > nextSpawnDistance) {
-    spawnObstacle();
-    // Next obstacle between 400 and 800 distance units away
-    nextSpawnDistance = distance + 400 + Math.random() * 400;
+
+  // Spawn obstacles immediately if none active
+  const activeObs = obstacles.find(o => !o.isCleared);
+  if (!activeObs) {
+    // Spawns just off-screen so the math problem enters the screen quickly, 
+    // but the slow speed ensures plenty of time and distance
+    spawnObstacle(50 + Math.random() * 50);
   }
-  
+
   const capybaraRect = game4Els.capybara.getBoundingClientRect();
   const areaRect = game4Els.area.getBoundingClientRect();
   // We consider the collision box center ~ cX + 50
-  const cX = capybaraRect.left - areaRect.left + 50; 
-  
+  const cX = capybaraRect.left - areaRect.left + 50;
+
   for (let i = obstacles.length - 1; i >= 0; i--) {
     let o = obstacles[i];
     o.x -= speed;
     o.el.style.left = `${o.x}px`;
-    
+
     // Check hit
     if (!o.isCleared && o.x < cX) {
       // Hit!
@@ -227,25 +236,25 @@ function gameLoop() {
       hearts--;
       speed = baseSpeed;
       updateUI();
-      
+
       game4Els.capybara.classList.remove('capybara-jump', 'capybara-stumble', 'capybara-turbo');
       void game4Els.capybara.offsetWidth;
       game4Els.capybara.classList.add('capybara-stumble');
-      
+
       o.el.remove();
       obstacles.splice(i, 1);
       updateOptions();
       continue;
     }
-    
+
     // Remove if strictly off screen
     if (o.x < -100) {
       o.el.remove();
       obstacles.splice(i, 1);
     }
   }
-  
-  if (distance >= 5000) { // 5000 units = win
+
+  if (distance >= 10000) { // 1000 units = win
     triggerGameOver(true);
   } else if (gameActive) {
     gameLoopId = requestAnimationFrame(gameLoop);
@@ -260,17 +269,17 @@ function createParticlesDirect(x, y, emoji, count = 6) {
     p.style.left = `${x}px`;
     p.style.top = `${y}px`;
     p.style.zIndex = '50';
-    
+
     const angle = Math.random() * Math.PI * 2;
     const distance = 30 + Math.random() * 50;
     const tx = Math.cos(angle) * distance;
     const ty = Math.sin(angle) * distance;
     const rot = (Math.random() - 0.5) * 360;
-    
+
     p.style.setProperty('--tx', `${tx}px`);
     p.style.setProperty('--ty', `${ty}px`);
     p.style.setProperty('--rot', `${rot}deg`);
-    
+
     game4Els.area.appendChild(p);
     setTimeout(() => p.remove(), 1000);
   }
