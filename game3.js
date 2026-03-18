@@ -11,7 +11,7 @@ let capybaraPos = { x: 50, y: 90 }; // Percentages relative to container area
 const game3Els = {
   score: document.getElementById('game3-score'),
   tableIndicator: document.getElementById('game3-table-indicator'),
-  instruction: document.getElementById('game3-instruction'),
+  instruction: document.getElementById('game3-bottom-instruction'),
   area: document.getElementById('game3-area'),
   lilypadsContainer: document.getElementById('game3-lilypads'),
   capybara: document.getElementById('game3-capybara')
@@ -40,7 +40,7 @@ export function startGame3() {
     currentTable * 6
   ];
   
-  game3Els.instruction.innerText = `¿Dónde está ${targetSequence[sequenceIndex]}?`;
+  game3Els.instruction.innerText = `¡Cruza el río siguiendo la tabla del ${currentTable}!`;
   
   // Generate level
   generateLevel();
@@ -137,7 +137,7 @@ function onLilypadClick(pad, num, pctX, pctY) {
     
     sequenceIndex++;
     if (sequenceIndex < targetSequence.length) {
-      game3Els.instruction.innerText = `¡Bien! Ahora... ${targetSequence[sequenceIndex]}`;
+      // Keep main instruction as is
       createParticles(pad, '✨');
     } else {
       game3Els.instruction.innerText = `¡Cruzaste el río!`;

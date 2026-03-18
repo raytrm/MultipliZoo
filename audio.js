@@ -45,6 +45,26 @@ export function playSound(type) {
       osc.stop(now + 0.3);
       break;
       
+    case 'tick': // Reloj / Switch On
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+      break;
+
+    case 'untick': // Switch Off
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+      break;
+      
     case 'wrong': // Fallo (Plop/Chapoteo)
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(300, now);

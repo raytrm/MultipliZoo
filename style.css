@@ -490,10 +490,14 @@ body {
 }
 .btn-quit-exam:active { transform: translateY(2px); box-shadow: 0 0px 0 #C62828; }
 .quiz-question-box {
-  background: white; padding: 40px 20px;
+  background: white; padding: 20px;
   text-align: center; border-radius: var(--border-radius-xl);
   box-shadow: 0 8px 0 #E0E0E0; margin-bottom: 30px;
   position: relative; overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
 }
 .quiz-progress-bar {
   position: absolute;

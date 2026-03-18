@@ -285,6 +285,15 @@ function setupQuizConfig() {
     
     import('./quiz.js').then(m => m.startQuiz({ mode: 'quiz', tables: selected, hints, time }));
   };
+
+  // Add sounds to toggles
+  document.getElementById('quiz-hints-toggle').addEventListener('change', (e) => {
+    playSound(e.target.checked ? 'pop' : 'pop');
+  });
+  
+  document.getElementById('quiz-time-toggle').addEventListener('change', (e) => {
+    playSound(e.target.checked ? 'tick' : 'untick');
+  });
 }
 
 // Arrancar App
