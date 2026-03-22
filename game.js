@@ -30,7 +30,7 @@ export function startGame() {
   gameEls.capybaraGroup.classList.remove('celebration-mode');
   // Start at exactly the beginning of the path
   const startPos = getPathPosition(0);
-  gameEls.capybaraGroup.style.transform = `translate(${startPos.x - 28}px, ${startPos.y - 40}px)`;
+  gameEls.capybaraGroup.style.transform = `translate(${startPos.x - 24}px, ${startPos.y - 36}px)`;
   gameEls.area.className = 'game-area bg-biome-0';
   updateScore();
   updateEnergy();
@@ -155,10 +155,36 @@ function showComboText(text) {
 }
 
 function addFriendToTrail(friend) {
-  const f = document.createElement('span');
+  const f = document.createElement('div');
   f.innerText = friend;
+  f.style.position = 'absolute';
+  f.style.fontSize = '3rem';
+  f.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
   f.style.animation = 'popBounce 0.5s ease-out';
   gameEls.trail.appendChild(f);
+  updateFriendsPositions();
+}
+
+function updateFriendsPositions() {
+  const friends = Array.from(gameEls.trail.children);
+  const capybaraOffsetX = -24;
+  const capybaraOffsetY = -36;
+  friends.forEach((f, idx) => {
+    let targetStep = progressStep - ((idx + 1) * 5); // 5% de distancia focal por amigo
+    if (targetStep < 0) targetStep = 0;
+    
+    const pos = getPathPosition(targetStep);
+    const flip = targetStep > 25 && targetStep < 75 ? 'scaleX(-1)' : 'scaleX(1)';
+    
+    // Ocultar al amigo si todavía está completamente en el inicio y el capibara apenas arranca
+    if (targetStep === 0 && progressStep < 5) {
+      f.style.opacity = '0';
+    } else {
+      f.style.opacity = '1';
+    }
+    
+    f.style.transform = `translate(${pos.x + capybaraOffsetX}px, ${pos.y + capybaraOffsetY}px) ${flip}`;
+  });
 }
 
 function updateBiome() {
@@ -192,11 +218,25 @@ function triggerWin() {
   gameEls.capybaraGroup.classList.add('celebration-mode');
   gameEls.capybaraGroup.style.animation = 'popBounce 1s infinite alternate';
   
+  // Amigos se reúnen en la meta
+  const friends = Array.from(gameEls.trail.children);
+  friends.forEach((f, idx) => {
+    setTimeout(() => {
+       const pos = getPathPosition(100);
+       const flip = 'scaleX(1)';
+       const offsetX = -24 + (Math.random() * 30 - 15);
+       const offsetY = -36 + (Math.random() * 30 - 15);
+       f.style.transform = `translate(${pos.x + offsetX}px, ${pos.y + offsetY}px) ${flip}`;
+       f.classList.add('celebration-mode');
+       f.style.animation = 'popBounce 1s infinite alternate';
+    }, 300 + (idx * 250)); // Se van juntando poco a poco
+  });
+  
   // Mostrar modal de resultado después de unos segundos
   setTimeout(() => {
     gameEls.capybaraGroup.style.animation = 'none';
     showGameResult('¡Victoria!', `¡Completaste el Camino del Carpincho con ${score} puntos!`, startGame);
-  }, 4000);
+  }, 4500);
 }
 
 function getPathPosition(percent) {
@@ -220,12 +260,12 @@ function nextRound() {
   // Posición basada en progressStep (0 to 100%) sobre el camino SVG
   const pos = getPathPosition(progressStep);
   
-  // Offset to center the capybara around the path line
-  const capybaraOffsetX = -28;
-  const capybaraOffsetY = -40;
+  const capybaraOffsetX = -24;
+  const capybaraOffsetY = -36;
   const flip = progressStep > 25 && progressStep < 75 ? 'scaleX(-1)' : 'scaleX(1)';
   
   gameEls.capybaraGroup.style.transform = `translate(${pos.x + capybaraOffsetX}px, ${pos.y + capybaraOffsetY}px) ${flip}`;
+  updateFriendsPositions();
 
   // Win condition: Meta alcanzada
   if (progressStep >= 100) {
@@ -310,7 +350,7 @@ function checkAnswer(selected, leafEl, a, b, targetPosPercent) {
     const currentPos = getPathPosition(progressStep);
     const flip = progressStep > 25 && progressStep < 75 ? 'scaleX(-1)' : 'scaleX(1)';
     
-    gameEls.capybaraGroup.style.transform = `translate(${currentPos.x - 28}px, ${currentPos.y - 40}px) ${flip} rotate(-10deg)`;
+    gameEls.capybaraGroup.style.transform = `translate(${currentPos.x - 24}px, ${currentPos.y - 36}px) ${flip} rotate(-10deg)`;
     setTimeout(nextRound, 2500);
   }
 }

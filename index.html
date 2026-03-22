@@ -77,35 +77,14 @@
 
       <!-- VISTA: Detalles de Aprender -->
       <section id="view-learn-detail" class="view">
-        <h2 id="learn-title-detail" class="title-large">Tabla del X</h2>
         <div class="learn-content glass-panel">
           <div id="learn-table-display" class="table-list"></div>
-          <div class="video-container">
-            <button id="btn-play-video" class="btn-primary" style="background:#E53935; box-shadow: 0 6px 0 #B71C1C;">▶
-              Ver Videos</button>
+          <div class="video-container" style="display: none; gap: 10px; justify-content: center;">
+            <button id="btn-play-song" class="btn-primary" style="background:#E53935; box-shadow: 0 6px 0 #B71C1C; margin: 0; flex: 1;">🎵 Canción</button>
+            <button id="btn-play-tricks" class="btn-primary" style="background:#E53935; box-shadow: 0 6px 0 #B71C1C; margin: 0; flex: 1;">✨ Trucos</button>
           </div>
         </div>
       </section>
-
-      <!-- Menu Videos Overlay -->
-      <div id="video-menu-overlay"
-        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9998; flex-direction:column; justify-content:center; align-items:center;">
-        <div class="glass-panel text-center"
-          style="position:relative; width:90%; max-width:400px; background:#fff; padding:30px; border-radius:15px; box-sizing:border-box;">
-          <button id="btn-close-video-menu"
-            style="position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:50%; border:none; background:#eee; font-size:1.2rem; font-weight:bold; cursor:pointer; color:#333; display:flex; justify-content:center; align-items:center; padding:0;">X</button>
-          <h2 id="video-menu-title" style="color:var(--color-primary); margin-bottom:20px; font-size:1.5rem;">Videos
-            Tabla del X</h2>
-          <div style="display:flex; flex-direction:column; gap:15px;">
-            <button class="btn-primary video-option-btn" data-type="musical"
-              style="margin:0; background:#9C27B0; box-shadow: 0 6px 0 #7B1FA2;">🎵 Musical</button>
-            <button class="btn-primary video-option-btn" data-type="teoria"
-              style="margin:0; background:#03A9F4; box-shadow: 0 6px 0 #0288D1;">📚 Teoría</button>
-            <button class="btn-primary video-option-btn" data-type="trucos"
-              style="margin:0; background:#FF9800; box-shadow: 0 6px 0 #F57C00;">✨ Trucos</button>
-          </div>
-        </div>
-      </div>
 
       <!-- Video Overlay Fulscreen -->
       <div id="video-overlay"
@@ -152,6 +131,17 @@
             <button id="btn-game-over-menu" class="btn-primary" style="margin:0; background:#9E9E9E; box-shadow: 0 6px 0 #757575; flex: 1;">Volver al menú</button>
             <button id="btn-game-over-retry" class="btn-primary" style="margin:0; flex: 1;">Reintentar</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Coming Soon Overlay -->
+      <div id="coming-soon-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:10001; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="glass-panel text-center alert-modal"
+          style="position:relative; width:90%; max-width:400px; background:#fff; padding:30px; border-radius:15px; box-sizing:border-box;">
+          <h2 style="color:var(--color-primary); margin-bottom:20px; font-size:1.5rem;">¡Próximamente!</h2>
+          <p style="font-size:1.2rem; color:#555; margin-bottom:20px;">Este juego todavía no está disponible.</p>
+          <button id="btn-close-coming-soon" class="btn-primary" style="margin:0 auto; background:#FF9800; box-shadow: 0 6px 0 #F57C00;">Aceptar</button>
         </div>
       </div>
 
@@ -224,9 +214,11 @@
             <!-- Opciones se inyectarán aquí -->
           </div>
           
-          <!-- Carpincho y Coleccionables -->
-          <div id="capybara-group" class="capybara-group">
-            <div id="collectibles-trail" class="collectibles-trail"></div>
+          <!-- Camino de Amigos -->
+          <div id="collectibles-trail" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9;"></div>
+          
+          <!-- Carpincho principal -->
+          <div id="capybara-group" class="capybara-group" style="z-index:10;">
             <div id="capybara-character" class="capybara">🐹</div>
           </div>
         </div>

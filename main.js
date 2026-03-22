@@ -63,9 +63,7 @@ function processGoBack() {
   playSound('pop');
   
   // Stop any active quiz timer if leaving quiz view
-  if (AppState.currentView === 'view-quiz-play') {
-    import('./quiz.js').then(m => m.stopTimer());
-  }
+  import('./quiz.js').then(m => m.stopTimer());
 
   if (AppState.history.length > 0) {
     const prev = AppState.history.pop();
@@ -87,22 +85,30 @@ function setupNavigation() {
       const titleEl = card.querySelector('h3');
       const text = titleEl ? titleEl.innerText : 'MultipliZoo';
       
+      if (['view-game2', 'view-game3', 'view-game4'].includes(targetId)) {
+        document.getElementById('coming-soon-overlay').style.display = 'flex';
+        return;
+      }
+      
       if (targetId === 'view-game') {
         import('./game.js').then(module => module.startGame());
-      } else if (targetId === 'view-game2') {
-        import('./game2.js').then(module => module.startGame2());
-      } else if (targetId === 'view-game3') {
-        import('./game3.js').then(module => module.startGame3());
-      } else if (targetId === 'view-game4') {
-        import('./game4.js').then(module => module.startGame4());
       } else if (targetId === 'view-contest') {
         import('./quiz.js').then(m => m.startQuiz({ mode: 'contest', tables: [2,3,4,5,6,7,8,9], hints: false, time: null }));
+        navigateTo('view-quiz-play', 'Concurso (5 Minutos)');
         return; // Evitar el navigateTo default para que quiz.js controle la vista
       }
       
       navigateTo(targetId, text);
     });
   });
+
+  const btnCloseComingSoon = document.getElementById('btn-close-coming-soon');
+  if (btnCloseComingSoon) {
+    btnCloseComingSoon.onclick = () => {
+      playSound('pop');
+      document.getElementById('coming-soon-overlay').style.display = 'none';
+    };
+  }
 }
 
 // ------ Funciones Globales ------
@@ -175,10 +181,8 @@ function setupLearnGrid() {
 function openLearnDetail(number) {
   navigateTo('view-learn-detail', `Tabla del ${number}`);
   
-  const title = document.getElementById('learn-title-detail');
   const tableDisplay = document.getElementById('learn-table-display');
   
-  title.innerText = `Tabla del ${number}`;
   tableDisplay.innerHTML = '';
   
   // Generar tabla visualmente
@@ -189,58 +193,57 @@ function openLearnDetail(number) {
     tableDisplay.appendChild(row);
   }
   
-  // Lista de videos educativos simpáticos para niños (IDs reales de Youtube de Happy Learning / Smile and Learn)
-  // Como fallback genérico se usa un video representativo de tablas.
-  const videoMap = {
-    0: 'sA2OqXINsIE', // Usando tabla del 10 para 0 por falta de uno específico
-    1: '9xpwH-57Ttc', 2: 'l1r4f6pW6QY', 3: 'M8XwWjC64x4',
-    4: 'fU8s01wD5zE', 5: 'X2I-B2E2D-c', 6: '5gKIfGg3Iro',
-    7: 'U6gY6PZ3u9c', 8: '2_hHMBmIt9Q', 9: 'X1E3a0K8k8k', 10: 'sA2OqXINsIE',
-    11: '9xpwH-57Ttc' // Usando tabla del 1 para 11 temporalmente
+  // Listas de videos a reproducir (IDs de YouTube)
+  // Puedes reemplazar los IDs aquí con los enlaces reales de YouTube para cada sección.
+  const songVideoMap = {
+    0: 'sA2OqXINsIE', 1: '9xpwH-57Ttc', 2: 'l1r4f6pW6QY', 3: 'M8XwWjC64x4',
+    4: 'fU8s01wD5zE', 5: 'X2I-B2E2D-c', 6: '5gKIfGg3Iro', 7: 'U6gY6PZ3u9c', 
+    8: '2_hHMBmIt9Q', 9: 'X1E3a0K8k8k', 10: 'sA2OqXINsIE', 11: '9xpwH-57Ttc'
   };
-  const vidId = videoMap[number] || '9xpwH-57Ttc';
+
+  const trickVideoMap = {
+    0: 'sA2OqXINsIE', 1: '9xpwH-57Ttc', 2: 'l1r4f6pW6QY', 3: 'M8XwWjC64x4',
+    4: 'fU8s01wD5zE', 5: 'X2I-B2E2D-c', 6: '5gKIfGg3Iro', 7: 'U6gY6PZ3u9c', 
+    8: '2_hHMBmIt9Q', 9: 'X1E3a0K8k8k', 10: 'sA2OqXINsIE', 11: '9xpwH-57Ttc'
+  };
+
+  const songVidId = songVideoMap[number] || '9xpwH-57Ttc';
+  const trickVidId = trickVideoMap[number] || '9xpwH-57Ttc';
   
-  const btnPlayVideo = document.getElementById('btn-play-video');
-  const videoMenuOverlay = document.getElementById('video-menu-overlay');
-  const videoMenuTitle = document.getElementById('video-menu-title');
-  const btnCloseVideoMenu = document.getElementById('btn-close-video-menu');
-  const videoOptions = document.querySelectorAll('.video-option-btn');
+  const btnPlaySong = document.getElementById('btn-play-song');
+  const btnPlayTricks = document.getElementById('btn-play-tricks');
   
   const videoOverlay = document.getElementById('video-overlay');
   const ytPlaceholder = document.getElementById('youtube-fullscreen-placeholder');
   const btnCloseVideo = document.getElementById('btn-close-video');
 
-  btnPlayVideo.onclick = () => {
+  btnPlaySong.onclick = () => {
     playSound('pop');
-    videoMenuTitle.innerText = `Videos Tabla del ${number}`;
-    videoMenuOverlay.style.display = 'flex';
+    videoOverlay.style.display = 'flex';
+    ytPlaceholder.innerHTML = `
+      <iframe width="100%" height="100%" 
+        src="https://www.youtube.com/embed/${songVidId}?autoplay=1" 
+        title="Canción - Tabla del ${number}" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    `;
   };
 
-  btnCloseVideoMenu.onclick = () => {
+  btnPlayTricks.onclick = () => {
     playSound('pop');
-    videoMenuOverlay.style.display = 'none';
+    videoOverlay.style.display = 'flex';
+    ytPlaceholder.innerHTML = `
+      <iframe width="100%" height="100%" 
+        src="https://www.youtube.com/embed/${trickVidId}?autoplay=1" 
+        title="Trucos - Tabla del ${number}" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    `;
   };
-
-  videoOptions.forEach(btn => {
-    btn.onclick = (e) => {
-      playSound('pop');
-      const type = e.currentTarget.getAttribute('data-type');
-      videoMenuOverlay.style.display = 'none';
-      videoOverlay.style.display = 'flex';
-      
-      let titleSuffix = type === 'musical' ? 'Musical' : (type === 'teoria' ? 'Teoría' : 'Trucos');
-      
-      ytPlaceholder.innerHTML = `
-        <iframe width="100%" height="100%" 
-          src="https://www.youtube.com/embed/${vidId}?autoplay=1" 
-          title="Video ${titleSuffix} - Tabla del ${number}" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-      `;
-    };
-  });
 
   btnCloseVideo.onclick = () => {
     playSound('pop');
