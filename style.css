@@ -116,6 +116,10 @@ body {
   transform: translateY(4px);
   box-shadow: var(--shadow-btn-active);
 }
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
+}
 
 .rewards-display {
   display: flex;
