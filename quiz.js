@@ -53,7 +53,7 @@ export function startQuiz(config) {
   });
   els.view.classList.add('active-view');
 
-  document.getElementById('header-title').innerText = cfg.mode === 'contest' ? 'Concurso (5 Minutos)' : 'Quiz Rápido';
+  document.getElementById('header-title').innerText = cfg.mode === 'contest' ? 'Concurso (5 Minutos)' : 'Entrenar';
 
   // Make sure global top bar back button is visible
   document.getElementById('btn-back').classList.remove('hidden');
@@ -134,19 +134,19 @@ function nextQuestion() {
     while (!found && attempts < 200) {
       a = cfg.tables[Math.floor(Math.random() * cfg.tables.length)];
       // Normalmente las tablas llegan hasta 10 (con 10 preguntas), pero generaremos del 1 al 10.
-      b = Math.floor(Math.random() * 10) + 1; 
+      b = Math.floor(Math.random() * 10) + 1;
       if (!usedQuestions.has(`${a}x${b}`)) {
         found = true;
       }
       attempts++;
     }
-    
+
     // Fallback por seguridad, en caso de superar intentos por alguna tabla reducida
     if (!found) {
       a = cfg.tables[0];
       b = 1;
     }
-    
+
     usedQuestions.add(`${a}x${b}`); // Añadimos la pregunta al historial nada más salir
   }
 
@@ -158,7 +158,7 @@ function nextQuestion() {
 
   waitingTransition = false;
   currentQ++;
-  
+
   if (cfg.mode === 'contest') {
     els.progress.innerText = `Aciertos: ${score}`;
   } else {
@@ -173,47 +173,47 @@ function nextQuestion() {
   const pBar = document.getElementById('quiz-progress-bar');
   if (cfg.mode !== 'contest') {
     if (cfg.time) {
-    // Calcular tiempo según la tabla base (a)
-    let dynamicTime = 20; // Default
-    if ([0, 1, 10, 11].includes(a)) {
-      dynamicTime = 8;
-    } else if ([2, 3, 5].includes(a)) {
-      dynamicTime = 12;
-    } else if ([4, 6, 9].includes(a)) {
-      dynamicTime = 16;
-    } else if ([7, 8].includes(a)) {
-      dynamicTime = 20;
-    }
-    
-    els.timer.classList.remove('hidden');
-    timeLeft = dynamicTime;
-    els.timer.innerText = `⏱ ${timeLeft}s`;
-
-    // Configurar barra de progreso visual
-    pBar.classList.remove('hidden');
-    pBar.style.transition = 'none';
-    pBar.style.transform = 'scaleX(1)';
-    // Forzar reflow para reiniciar la animación
-    void pBar.offsetWidth;
-    pBar.style.transition = `transform ${dynamicTime}s linear`;
-    pBar.style.transform = 'scaleX(0)';
-
-    clearInterval(timerInt);
-    timerInt = setInterval(() => {
-      if (waitingTransition) {
-        // Pausar animacion de barra
-        const currentTransform = window.getComputedStyle(pBar).transform;
-        pBar.style.transition = 'none';
-        pBar.style.transform = currentTransform;
-        return;
+      // Calcular tiempo según la tabla base (a)
+      let dynamicTime = 20; // Default
+      if ([0, 1, 10, 11].includes(a)) {
+        dynamicTime = 8;
+      } else if ([2, 3, 5].includes(a)) {
+        dynamicTime = 12;
+      } else if ([4, 6, 9].includes(a)) {
+        dynamicTime = 16;
+      } else if ([7, 8].includes(a)) {
+        dynamicTime = 20;
       }
-      timeLeft--;
+
+      els.timer.classList.remove('hidden');
+      timeLeft = dynamicTime;
       els.timer.innerText = `⏱ ${timeLeft}s`;
-      if (timeLeft <= 0) {
-        clearInterval(timerInt);
-        processAnswer(-1); // Tiempo agotado = incorrecto
-      }
-    }, 1000);
+
+      // Configurar barra de progreso visual
+      pBar.classList.remove('hidden');
+      pBar.style.transition = 'none';
+      pBar.style.transform = 'scaleX(1)';
+      // Forzar reflow para reiniciar la animación
+      void pBar.offsetWidth;
+      pBar.style.transition = `transform ${dynamicTime}s linear`;
+      pBar.style.transform = 'scaleX(0)';
+
+      clearInterval(timerInt);
+      timerInt = setInterval(() => {
+        if (waitingTransition) {
+          // Pausar animacion de barra
+          const currentTransform = window.getComputedStyle(pBar).transform;
+          pBar.style.transition = 'none';
+          pBar.style.transform = currentTransform;
+          return;
+        }
+        timeLeft--;
+        els.timer.innerText = `⏱ ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInt);
+          processAnswer(-1); // Tiempo agotado = incorrecto
+        }
+      }, 1000);
     } else {
       els.timer.classList.add('hidden');
       pBar.classList.add('hidden');
@@ -234,7 +234,7 @@ function nextQuestion() {
 function processAnswer(givenStr) {
   if (waitingTransition) return;
   waitingTransition = true;
-  
+
   // En concurso, el tiempo es global y no se pausa
   if (cfg.mode !== 'contest') {
     clearInterval(timerInt);
@@ -292,7 +292,7 @@ function processAnswer(givenStr) {
   }
 
   if (transitionTimeout) clearTimeout(transitionTimeout);
-  
+
   if (given !== currentAns) {
     // Si fue error o timeout, esperamos acción manual
     els.btnContinueContainer.style.display = 'flex';
@@ -351,13 +351,13 @@ function buildNumpad() {
       playSound('pop');
       if (k === 'C') els.input.value = '';
       else if (k === 'OK') {
-        if(!waitingTransition) processAnswer(els.input.value || -1);
+        if (!waitingTransition) processAnswer(els.input.value || -1);
       }
       else els.input.value += k;
     };
     els.numpadGrid.appendChild(btn);
   });
-  
+
   els.btnContinue.onclick = () => {
     playSound('pop');
     nextQuestion();

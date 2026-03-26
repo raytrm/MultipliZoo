@@ -94,10 +94,20 @@ body {
   z-index: 100;
 }
 
+.title-container {
+  flex: 1;
+  text-align: center;
+  padding: 0 10px;
+  min-width: 0;
+}
+
 .title-container h1 {
-  font-size: 1.5rem;
+  font-size: 1.35rem; /* Ligeramente más pequeño */
   color: var(--color-text-dark);
   text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .icon-btn {
@@ -495,14 +505,14 @@ body {
 }
 .btn-quit-exam:active { transform: translateY(2px); box-shadow: 0 0px 0 #C62828; }
 .quiz-question-box {
-  background: white; padding: 20px;
+  background: white; padding: 10px;
   text-align: center; border-radius: var(--border-radius-xl);
-  box-shadow: 0 8px 0 #E0E0E0; margin-bottom: 30px;
+  box-shadow: 0 6px 0 #E0E0E0; margin-bottom: 15px;
   position: relative; overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 160px;
+  min-height: 100px;
 }
 .quiz-progress-bar {
   position: absolute;
@@ -514,7 +524,7 @@ body {
 }
 .equation-huge {
   position: relative; z-index: 2;
-  font-size: 4rem; font-weight: 800; color: var(--color-text-dark);
+  font-size: 3.2rem; font-weight: 800; color: var(--color-text-dark);
 }
 .equation-huge.correct-anim { color: #4CAF50; transform: scale(1.1); transition: 0.3s; }
 .equation-huge.wrong-anim { color: #F44336; transform: scale(0.9); transition: 0.3s; }
@@ -536,13 +546,13 @@ body {
   display: flex; flex-direction: column; align-items: center;
 }
 #quiz-input-answer {
-  width: 100%; font-size: 2.5rem; text-align: center;
-  padding: 10px; border: 4px solid var(--color-glass-border);
-  border-radius: var(--border-radius-md); margin-bottom: 16px;
+  width: 100%; font-size: 2rem; text-align: center;
+  padding: 6px; border: 4px solid var(--color-glass-border);
+  border-radius: var(--border-radius-md); margin-bottom: 10px;
   color: var(--color-text-dark); background: white;
 }
 .numpad-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
   width: 100%; max-width: 300px;
 }
 
