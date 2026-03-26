@@ -389,11 +389,12 @@ body {
   position: absolute;
   top: 20px; left: 50%; transform: translateX(-50%);
   background: white;
-  border-radius: 50%;
+  border-radius: 50px;
   padding: 15px 30px;
   font-size: 2.2rem;
   font-weight: 800;
   box-shadow: 0 8px 0 #E0E0E0;
+  white-space: nowrap;
 }
 .thought-bubble::after {
   content: '';
